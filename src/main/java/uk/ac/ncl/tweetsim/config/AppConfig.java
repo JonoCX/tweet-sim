@@ -7,7 +7,8 @@ import org.springframework.context.annotation.Configuration;
  * @author Jonathan Carlton
  */
 @Configuration
-@ComponentScan(basePackages = { "uk.ac.ncl.tweetsim" })
-public class AppConfig {  }
+@ComponentScan(basePackages = {"uk.ac.ncl.tweetsim"})
+public class AppConfig 
+{
 
-
+}

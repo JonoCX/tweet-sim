@@ -35,7 +35,7 @@ public abstract class AbstractWorker extends Thread
         }
     }
 
-    protected abstract void execute() throws WorkException;
+    protected abstract void execute() throws WorkerException;
 
     protected void saveChange() {
         Session session = sessionFactory.getCurrentSession();
