@@ -21,12 +21,12 @@ import java.util.List;
  */
 @Component
 @Transactional
-public class InputWorker extends AbstractWorker
+public class TweetInputWorker extends AbstractWorker
 {
     @Autowired
     private TweetRepository tweetRepository;
 
-    protected Logger logger = Logger.getLogger(InputWorker.class);
+    protected Logger logger = Logger.getLogger(TweetInputWorker.class);
 
     @Override
     protected void execute() throws WorkerException {

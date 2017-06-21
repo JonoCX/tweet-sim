@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
-import uk.ac.ncl.tweetsim.input.InputWorker;
+import uk.ac.ncl.tweetsim.input.TweetInputWorker;
 
 import javax.transaction.Transactional;
 import java.util.HashMap;
@@ -23,7 +23,7 @@ public class Runner
     private static final String INPUT = "input";
 
     @Autowired
-    private InputWorker input;
+    private TweetInputWorker input;
 
     public static void main(String[] args) {
         // todo change this to be more dynamic in options.
