@@ -6,14 +6,21 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import twitter4j.Twitter;
+import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
+import uk.ac.ncl.botnetwork.domain.Connection;
+import uk.ac.ncl.botnetwork.domain.Tweet;
 import uk.ac.ncl.botnetwork.domain.User;
+import uk.ac.ncl.botnetwork.repositories.ConnectionRepository;
+import uk.ac.ncl.botnetwork.repositories.TweetRepository;
 import uk.ac.ncl.botnetwork.repositories.UserRepository;
 import uk.ac.ncl.tweetsim.AbstractWorker;
 import uk.ac.ncl.tweetsim.WorkerException;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  *
@@ -31,6 +38,17 @@ public class UserWorker implements Runnable
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ConnectionRepository connectionRepository;
+
+    @Autowired
+    private TweetRepository tweetRepository;
+
+    private Twitter twitter;
+    private User user;
+    private String outStarter;
+    private List<Long> connections;
 
     @Override
     public void run() {
@@ -54,8 +72,28 @@ public class UserWorker implements Runnable
         }
     }
 
-    private void doWork() {
+    private void doWork() throws TwitterException {
+        Long threadId = Thread.currentThread().getId();
+        this.outStarter = "[" + threadId + "] ";
+        logger.info(outStarter + "Starting up...");
 
+        logger.info(outStarter + "Checking out a user...");
+        this.user = userRepository.checkOutUser();
+        logger.info(outStarter + "User checked out: " + user.getScreenName());
+        this.outStarter = "[" + user.getScreenName() + "] ";
+
+        this.twitter = this.getConnection();
+        logger.info(outStarter + "Connected to Twitter.");
+
+        logger.info(outStarter + "Checking if network needs updating...");
+        this.updateNetwork();
+
+        // post tweet (also includes the third bullet point from below)
+        logger.info(outStarter + "Beginning posting tweets...");
+        logger.warn(outStarter + "This runs indefinitely and requires you to forcibly stop it.");
+        while (true) {
+            this.tweet();
+        }
     }
 
     /*
@@ -71,10 +109,85 @@ public class UserWorker implements Runnable
      */
 
     private Twitter getConnection() {
-        return null
+        logger.info(outStarter + "Creating Twitter connection....");
+        ConfigurationBuilder cb = new ConfigurationBuilder();
+        cb.setDebugEnabled(true)
+                .setOAuthConsumerKey(user.getConsumerKey())
+                .setOAuthConsumerSecret(user.getConsumerSecret())
+                .setOAuthAccessToken(user.getAccessToken())
+                .setOAuthAccessTokenSecret(user.getAccessTokenSecret());
+        TwitterFactory factory = new TwitterFactory(cb.build());
+        return factory.getInstance();
     }
 
-    private void updateNetwork() {
+    private void updateNetwork() throws TwitterException {
+        List<Long> dbConnections = connectionRepository.findAllFollowingIDs(user);
+        this.connections = dbConnections;
 
+        // this shouldn't reach the rate limit.
+        List<Long> following = new ArrayList<>();
+        Long cursor = -1L;
+        IDs ids;
+        do {
+            ids = twitter.getFollowersIDs(user.getScreenName(), cursor);
+            for (Long i : ids.getIDs()) {
+                following.add(i);
+            }
+        } while ((cursor = ids.getNextCursor()) != 0);
+
+        /*
+            Logic.
+                If the id is not present in the list of IDS, create friendship.
+                if the id is present in the list, skip.
+                If the id is present in the list, but not in the new list - destroy.
+         */
+
+        // checks for new connections
+        for (Long stored : dbConnections) {
+            if (!(following.contains(stored))) {
+                twitter.createFriendship(stored);
+            }
+        }
+
+        // removes old connections that have been removed from the db.
+        for (Long online : following) {
+            if (!(dbConnections.contains(online))) {
+                twitter.destroyFriendship(online);
+            }
+        }
+
+        logger.info(outStarter + "Network updated as per the database.");
+    }
+
+    private void tweet() throws TwitterException {
+        // post tweets but also with some fixed probability retweet/like another user
+        // that this user is following rather than tweeting something.
+
+        // what should the probability be? 10% (1/10) then 1/2 (50%) of either retweet or like.
+
+        Integer tweetProb = ThreadLocalRandom.current().nextInt(10);
+        Boolean retweetOrLike = tweetProb == 0; // true if == 0, false if not.
+
+
+        if (retweetOrLike) { // retweet or like.
+            // select a target.
+            Long targetUser = connections.get(ThreadLocalRandom.current().nextInt(connections.size()));
+
+            // for simplicity, just retweet their most recent tweet.
+            Status status = twitter.getUserTimeline(targetUser).get(0);
+            Long sId = status.getId();
+
+            Integer which = ThreadLocalRandom.current().nextInt(2); // 0 = retweet, 1 = like
+            if (which == 0) { // retweet
+                twitter.retweetStatus(sId);
+            } else { // like
+                twitter.createFavorite(sId);
+            }
+        }
+        else { // post new tweet.
+            Tweet tweet = tweetRepository.getRandomTweet();
+            logger.info(outStarter + "Tweet selected: " + tweet);
+            twitter.updateStatus(tweet.getText());
+        }
     }
 }
