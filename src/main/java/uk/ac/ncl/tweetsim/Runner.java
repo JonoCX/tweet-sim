@@ -6,6 +6,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
 import uk.ac.ncl.tweetsim.input.TweetInputWorker;
+import uk.ac.ncl.tweetsim.input.UserInputWorker;
 
 import javax.transaction.Transactional;
 import java.util.HashMap;
@@ -20,10 +21,14 @@ public class Runner
 {
     protected static Logger logger = Logger.getLogger(Runner.class);
 
-    private static final String INPUT = "input";
+    private static final String TWEET_INPUT = "tweet-input";
+    private static final String USER_INPUT = "user-input";
 
     @Autowired
-    private TweetInputWorker input;
+    private TweetInputWorker tweetInput;
+
+    @Autowired
+    private UserInputWorker userInput;
 
     public static void main(String[] args) {
         // todo change this to be more dynamic in options.
@@ -31,7 +36,7 @@ public class Runner
             ApplicationContext context = new ClassPathXmlApplicationContext("tweet-sim-app-config.xml");
             Runner runner = (Runner) context.getBean("runner");
 
-            runner.run(INPUT);
+            runner.run(USER_INPUT);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             e.printStackTrace();
@@ -45,7 +50,8 @@ public class Runner
 
     private Map<String, AbstractWorker> getWorkers() {
         Map<String, AbstractWorker> workers = new HashMap<>();
-        workers.put(INPUT, input);
+        workers.put(TWEET_INPUT, tweetInput);
+        workers.put(USER_INPUT, userInput);
         return workers;
     }
 }

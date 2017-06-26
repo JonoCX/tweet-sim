@@ -7,6 +7,9 @@ import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
+ * An abstract work that each of the specific works in
+ * this code base extend.
+ *
  * @author Jonathan Carlton
  */
 public abstract class AbstractWorker extends Thread

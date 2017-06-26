@@ -20,7 +20,7 @@
         <dependency>
             <groupId>uk.ac.ncl.botnetwork</groupId>
             <artifactId>bot-network-api</artifactId>
-            <version>0.3</version>
+            <version>0.4</version>
         </dependency>
 
         <!-- Hibernate -->
@@ -40,6 +40,12 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>5.0.2.Final</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-spatial</artifactId>
+            <version>4.3</version>
         </dependency>
 
         <!-- Spring -->
@@ -94,6 +100,13 @@
             <groupId>org.postgis</groupId>
             <artifactId>postgis-jdbc</artifactId>
             <version>1.3.3</version>
+        </dependency>
+
+        <!-- Twitter -->
+        <dependency>
+            <groupId>org.twitter4j</groupId>
+            <artifactId>twitter4j-core</artifactId>
+            <version>4.0.6</version>
         </dependency>
 
 
