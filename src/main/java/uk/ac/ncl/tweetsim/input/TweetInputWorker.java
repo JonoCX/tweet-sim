@@ -27,7 +27,7 @@ import java.util.List;
  */
 @Component
 @Transactional
-public class TweetInputWorker extends AbstractWorker
+public class TweetInputWorker extends AbstractWorker implements InputWorker
 {
     @Autowired
     private TweetRepository tweetRepository;
@@ -39,7 +39,7 @@ public class TweetInputWorker extends AbstractWorker
     @Override
     protected void execute() throws WorkerException {
         logger.info("Loading tweets...");
-        List<Tweet> tweets = this.getFileTweets();
+        List<Tweet> tweets = this.readFile();
         logger.info(tweets.size() + " tweets loaded.");
 
         logger.info("Saving to database...");
@@ -48,13 +48,10 @@ public class TweetInputWorker extends AbstractWorker
     }
 
     /**
-     * @see uk.ac.ncl.tweetsim.util.Util for file configuration
-     * information - this methods requires a particular string
-     * input for it to work.
-     * @return  a list of tweets constructed from a txt file
-     * stored in the data directory of this project.
+     * {@inheritDoc}
      */
-    private List<Tweet> getFileTweets() {
+    @Override
+    public List<Tweet> readFile() {
         List<Tweet> tweets = new ArrayList<>();
 
         List<String> stringList = Util.readFile("tweets.txt");

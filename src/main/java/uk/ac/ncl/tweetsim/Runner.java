@@ -5,14 +5,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
+import uk.ac.ncl.tweetsim.input.ConnectionInputWorker;
 import uk.ac.ncl.tweetsim.input.TweetInputWorker;
 import uk.ac.ncl.tweetsim.input.UserInputWorker;
+import uk.ac.ncl.tweetsim.twitter.NetworkWorker;
 
 import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * The main class.
+ *
+ * Various workers can be spawned from here.
+ *
  * @author Jonathan Carlton
  */
 @Component
@@ -23,6 +29,8 @@ public class Runner
 
     private static final String TWEET_INPUT = "tweet-input";
     private static final String USER_INPUT = "user-input";
+    private static final String CONNECTION_INPUT = "connection-input";
+    private static final String NETWORK = "network";
 
     @Autowired
     private TweetInputWorker tweetInput;
@@ -30,13 +38,20 @@ public class Runner
     @Autowired
     private UserInputWorker userInput;
 
+    @Autowired
+    private ConnectionInputWorker connectionInput;
+
+    @Autowired
+    private NetworkWorker network;
+
     public static void main(String[] args) {
         // todo change this to be more dynamic in options.
         try {
             ApplicationContext context = new ClassPathXmlApplicationContext("tweet-sim-app-config.xml");
             Runner runner = (Runner) context.getBean("runner");
 
-            runner.run(USER_INPUT);
+
+            runner.run(NETWORK);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             e.printStackTrace();
@@ -52,6 +67,8 @@ public class Runner
         Map<String, AbstractWorker> workers = new HashMap<>();
         workers.put(TWEET_INPUT, tweetInput);
         workers.put(USER_INPUT, userInput);
+        workers.put(CONNECTION_INPUT, connectionInput);
+        workers.put(NETWORK, network);
         return workers;
     }
 }

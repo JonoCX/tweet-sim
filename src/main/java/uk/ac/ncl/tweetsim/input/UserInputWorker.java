@@ -30,7 +30,7 @@ import java.util.List;
  */
 @Component
 @Transactional
-public class UserInputWorker extends AbstractWorker
+public class UserInputWorker extends AbstractWorker implements InputWorker
 {
     protected Logger logger = Logger.getLogger(UserInputWorker.class);
 
@@ -40,7 +40,7 @@ public class UserInputWorker extends AbstractWorker
     @Override
     protected void execute() throws WorkerException {
         logger.info("Loading users...");
-        List<User> users = this.getFileUsers();
+        List<User> users = this.readFile();
         logger.info(users.size() + " users loaded");
 
         logger.info("Saving to database...");
@@ -49,13 +49,10 @@ public class UserInputWorker extends AbstractWorker
     }
 
     /**
-     * @see uk.ac.ncl.tweetsim.util.Util for file configuration
-     * information - this method requires a particular string
-     * input for it to work.
-     * @return  a list of users constructed from a txt file
-     * stored in the data directory of this project.
+     * {@inheritDoc}
      */
-    private List<User> getFileUsers() {
+    @Override
+    public List<User> readFile() {
         List<User> users = new ArrayList<>();
 
         List<String> stringList = Util.readFile("users.txt");
@@ -99,6 +96,13 @@ public class UserInputWorker extends AbstractWorker
         return users;
     }
 
+    /**
+     * Validate the keys that are included in the user text file.
+     *
+     * @param keys  the set of keys to valid (per user).
+     * @return      true if they are able to create a valid
+     * Twitter instance, false if not.
+     */
     private Boolean validateKeys(String[] keys) {
         ConfigurationBuilder cb = new ConfigurationBuilder();
         cb.setDebugEnabled(true)
