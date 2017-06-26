@@ -1,4 +1,7 @@
 # Created by .ignore support plugin (hsz.mobi)
+
+/data/users.txt
+
 ### Windows template
 # Windows thumbnail cache files
 Thumbs.db
