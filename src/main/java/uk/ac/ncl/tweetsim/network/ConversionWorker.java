@@ -7,8 +7,6 @@ import br.les.opus.twitter.repositories.TweetClassificationRepository;
 import br.les.opus.twitter.repositories.TweetRepository;
 import br.les.opus.twitter.repositories.TwitterUserRepository;
 import org.joda.time.LocalDateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.ac.ncl.botnetwork.domain.Connection;
@@ -51,6 +49,23 @@ public class ConversionWorker extends AbstractWorker
 
     }
 
+    private List<User> getUserList() {
+        return (List<User>) btUserRepo.findAll();
+    }
+
+    private List<uk.ac.ncl.botnetwork.domain.Tweet> getTweetList() {
+        return (List<uk.ac.ncl.botnetwork.domain.Tweet>) btTweetRepo.findAll();
+    }
+
+    private Map<Long, TweetClassification> createMap() {
+        Map<Long, TweetClassification> map = new HashMap<>();
+        List<TweetClassification> list = classRepository.findAll();
+        for (TweetClassification tc : list) {
+            map.put(tc.getId(), tc);
+        }
+        return map;
+    }
+
     public List<TwitterUser> userConvert(List<User> list) {
         List<TwitterUser> result = new ArrayList<>();
 
@@ -80,7 +95,7 @@ public class ConversionWorker extends AbstractWorker
         for (uk.ac.ncl.botnetwork.domain.Tweet t : list) {
             tweet = new Tweet();
             tweet.setText(t.getText());
-            tweet.setClassification(classRepository.findOne(t.getClassificationId()));
+            tweet.setClassification(classificationMap.get(t.getClassificationId()));
 
             // set random ID
             LocalDateTime ldt = new LocalDateTime();
@@ -95,12 +110,15 @@ public class ConversionWorker extends AbstractWorker
         return result;
     }
 
-    public List<TwitterUser> connectionConvert(
-            List<TwitterUser> users, List<Connection> connections)
-    {
+    public List<TwitterUser> connectionConvert(List<TwitterUser> users) {
         List<TwitterUser> result = new ArrayList<>();
 
-
+        List<User> storedFollowers;
+        for (TwitterUser user : users) {
+            User stored = btUserRepo.findOne(user.getId());
+            storedFollowers = btConnRepo.findAllFollowers(stored);
+            // todo - finish.
+        }
 
         return result;
     }
