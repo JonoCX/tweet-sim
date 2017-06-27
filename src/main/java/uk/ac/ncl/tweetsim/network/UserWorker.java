@@ -1,4 +1,4 @@
-package uk.ac.ncl.tweetsim.twitter;
+package uk.ac.ncl.tweetsim.network;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
@@ -8,14 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
-import uk.ac.ncl.botnetwork.domain.Connection;
 import uk.ac.ncl.botnetwork.domain.Tweet;
 import uk.ac.ncl.botnetwork.domain.User;
 import uk.ac.ncl.botnetwork.repositories.ConnectionRepository;
 import uk.ac.ncl.botnetwork.repositories.TweetRepository;
 import uk.ac.ncl.botnetwork.repositories.UserRepository;
-import uk.ac.ncl.tweetsim.AbstractWorker;
-import uk.ac.ncl.tweetsim.WorkerException;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -106,6 +103,13 @@ public class UserWorker implements Runnable
         It would be good if, with some probability, the user could retweet/like
         a status that has been posted by one of the other users in its network
         (they should be users that the user follows).
+
+        todo add in the frequency of which the user posts a tweet.
+
+        For the above, there could be a default value that all of the users
+        post at if a number is defined.
+        Thoughts: How to define the number? How many times, within a 10 min
+        period, do the users post.
      */
 
     private Twitter getConnection() {

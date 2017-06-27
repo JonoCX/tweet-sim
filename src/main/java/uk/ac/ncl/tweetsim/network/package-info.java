@@ -4,4 +4,4 @@
  *
  * @author Jonathan Carlton
  */
-package uk.ac.ncl.tweetsim.twitter;
+package uk.ac.ncl.tweetsim.network;

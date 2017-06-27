@@ -57,7 +57,6 @@ public class UserInputWorker extends AbstractWorker implements InputWorker
 
         List<String> stringList = Util.readFile("users.txt");
         User user;
-        Integer line = 1;
         for (String s : stringList) {
             String[] split = s.split(",");
 
@@ -68,57 +67,12 @@ public class UserInputWorker extends AbstractWorker implements InputWorker
 
             user = new User(
                     Long.parseLong(split[0]),
-                    split[1],
-                    split[2],
-                    split[3],
-                    split[4],
-                    split[5]
+                    split[1]
             );
 
-            String[] keys = {
-                    user.getConsumerKey(),
-                    user.getConsumerSecret(),
-                    user.getAccessToken(),
-                    user.getAccessTokenSecret()
-            };
-
-            if (validateKeys(keys)) {
-                users.add(user);
-                logger.info("The keys for the user " + user.getScreenName() + " were able to be validated against" +
-                        " the Twitter API.");
-            } else {
-                logger.warn(user.getScreenName() + " could not have it's keys validated, see" +
-                        " line " + line + " in the text file.");
-            }
-            line++;
+            users.add(user);
         }
 
         return users;
-    }
-
-    /**
-     * Validate the keys that are included in the user text file.
-     *
-     * @param keys  the set of keys to valid (per user).
-     * @return      true if they are able to create a valid
-     * Twitter instance, false if not.
-     */
-    private Boolean validateKeys(String[] keys) {
-        ConfigurationBuilder cb = new ConfigurationBuilder();
-        cb.setDebugEnabled(true)
-                .setOAuthConsumerKey(keys[0])
-                .setOAuthConsumerSecret(keys[1])
-                .setOAuthAccessToken(keys[2])
-                .setOAuthAccessTokenSecret(keys[3]);
-        TwitterFactory factory = new TwitterFactory(cb.build());
-        Twitter twitter = factory.getInstance();
-
-        // Throws an exception if credentials aren't valid.
-        try {
-            twitter.verifyCredentials();
-            return Boolean.TRUE;
-        } catch (TwitterException te) {
-            return Boolean.FALSE;
-        }
     }
 }

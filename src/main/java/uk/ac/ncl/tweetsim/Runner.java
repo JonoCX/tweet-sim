@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import uk.ac.ncl.tweetsim.input.ConnectionInputWorker;
 import uk.ac.ncl.tweetsim.input.TweetInputWorker;
 import uk.ac.ncl.tweetsim.input.UserInputWorker;
-import uk.ac.ncl.tweetsim.twitter.NetworkWorker;
+import uk.ac.ncl.tweetsim.network.NetworkWorker;
 
 import javax.transaction.Transactional;
 import java.util.HashMap;

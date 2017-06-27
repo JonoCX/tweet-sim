@@ -23,6 +23,12 @@
             <version>0.4</version>
         </dependency>
 
+        <dependency>
+            <groupId>br.les.opus</groupId>
+            <artifactId>twitter-api</artifactId>
+            <version>0.3.0</version>
+        </dependency>
+
         <!-- Hibernate -->
         <dependency>
             <groupId>org.hibernate</groupId>

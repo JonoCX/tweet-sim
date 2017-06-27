@@ -65,7 +65,13 @@ public class TweetInputWorker extends AbstractWorker implements InputWorker
                 split[i] = split[i].trim();
             }
 
-            t = new Tweet(split[0]);
+            Long classification = Long.parseLong(split[1]);
+            if (classification > 3 || classification < 1) {
+                logger.error("The classification id needs to be between 1 and 3. See line " + line + " in the text" +
+                        " file.");
+            }
+
+            t = new Tweet(split[0], classification);
 
             if (t.getText().length() > TWEET_LIMIT) {
                 logger.warn(t.getText() + " is over the Twitter character limit (140). See line " + line + " in" +

@@ -1,4 +1,4 @@
-package uk.ac.ncl.tweetsim.twitter;
+package uk.ac.ncl.tweetsim.network;
 
 import org.springframework.stereotype.Component;
 import uk.ac.ncl.tweetsim.AbstractWorker;
@@ -20,7 +20,7 @@ public class NetworkWorker extends AbstractWorker
     protected void execute() throws WorkerException {
         ExecutorService service = Executors.newCachedThreadPool();
         for (int i = 0; i < 2; i++) {
-            service.execute(new UserWorker(123));
+            service.execute(new UserWorker());
         }
     }
 
