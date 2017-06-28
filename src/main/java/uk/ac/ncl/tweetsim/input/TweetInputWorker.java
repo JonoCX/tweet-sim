@@ -5,7 +5,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.ac.ncl.botnetwork.domain.Tweet;
-import uk.ac.ncl.botnetwork.repositories.TweetRepository;
+import uk.ac.ncl.botnetwork.repositories.BNTweetRepository;
 import uk.ac.ncl.tweetsim.AbstractWorker;
 import uk.ac.ncl.tweetsim.WorkerException;
 import uk.ac.ncl.tweetsim.util.Util;
@@ -30,7 +30,7 @@ import java.util.List;
 public class TweetInputWorker extends AbstractWorker implements InputWorker
 {
     @Autowired
-    private TweetRepository tweetRepository;
+    private BNTweetRepository tweetRepository;
 
     protected Logger logger = Logger.getLogger(TweetInputWorker.class);
 

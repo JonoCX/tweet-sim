@@ -51,7 +51,7 @@ public class Runner
             Runner runner = (Runner) context.getBean("runner");
 
 
-            runner.run(NETWORK);
+//            runner.run(NETWORK);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             e.printStackTrace();
