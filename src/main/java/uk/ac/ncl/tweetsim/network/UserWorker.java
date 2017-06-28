@@ -75,11 +75,11 @@ public class UserWorker implements Runnable
         logger.info(outStarter + "Starting up...");
 
         logger.info(outStarter + "Checking out a user...");
-        this.user = userRepository.checkOutUser();
+        //this.user = userRepository.checkOutUser();
         logger.info(outStarter + "User checked out: " + user.getScreenName());
         this.outStarter = "[" + user.getScreenName() + "] ";
 
-        this.twitter = this.getConnection();
+        //this.twitter = this.getConnection();
         logger.info(outStarter + "Connected to Twitter.");
 
         logger.info(outStarter + "Checking if network needs updating...");
@@ -111,18 +111,6 @@ public class UserWorker implements Runnable
         Thoughts: How to define the number? How many times, within a 10 min
         period, do the users post.
      */
-
-    private Twitter getConnection() {
-        logger.info(outStarter + "Creating Twitter connection....");
-        ConfigurationBuilder cb = new ConfigurationBuilder();
-        cb.setDebugEnabled(true)
-                .setOAuthConsumerKey(user.getConsumerKey())
-                .setOAuthConsumerSecret(user.getConsumerSecret())
-                .setOAuthAccessToken(user.getAccessToken())
-                .setOAuthAccessTokenSecret(user.getAccessTokenSecret());
-        TwitterFactory factory = new TwitterFactory(cb.build());
-        return factory.getInstance();
-    }
 
     private void updateNetwork() throws TwitterException {
         List<Long> dbConnections = connectionRepository.findAllFollowingIDs(user);
