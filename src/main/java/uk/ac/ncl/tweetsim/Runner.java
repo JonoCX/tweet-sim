@@ -56,7 +56,7 @@ public class Runner
             Runner runner = (Runner) context.getBean("runner");
 
 
-           runner.run(TWEET_INPUT);
+           runner.run(CONNECTION_INPUT);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             e.printStackTrace();

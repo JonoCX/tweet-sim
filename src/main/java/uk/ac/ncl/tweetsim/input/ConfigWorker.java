@@ -80,8 +80,8 @@ public class ConfigWorker extends AbstractWorker implements InputWorker
             int numUsers = Integer.parseInt(map.get("users"));
             int maxTweets = Integer.parseInt(map.get("maxTweets"));
             int minTweets = Integer.parseInt(map.get("minTweets"));
-            int maxFollowers = Integer.parseInt(map.get("minFollowers"));
-            int minFollowers = Integer.parseInt(map.get("maxFollowers"));
+            int maxFollowers = Integer.parseInt(map.get("maxFollowers"));
+            int minFollowers = Integer.parseInt(map.get("minFollowers"));
 
             c = new Config(
                     numUsers,

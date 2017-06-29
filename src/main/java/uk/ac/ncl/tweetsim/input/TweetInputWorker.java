@@ -33,7 +33,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 @Component
 @Transactional
-public class TweetInputWorker extends AbstractWorker implements InputWorker
+public class TweetInputWorker extends AbstractWorker
 {
     @Autowired
     private TweetRepository tweetRepository;
@@ -44,6 +44,8 @@ public class TweetInputWorker extends AbstractWorker implements InputWorker
     @Autowired
     private ConfigRepository configRepository;
 
+    private Config config;
+
     protected Logger logger = Logger.getLogger(TweetInputWorker.class);
 
     private static final Integer TWEET_LIMIT = 140;
@@ -51,58 +53,21 @@ public class TweetInputWorker extends AbstractWorker implements InputWorker
     @Override
     protected void execute() throws WorkerException {
         logger.info("Loading current configuration...");
-        Config config = configRepository.findAll(new Sort(Sort.Direction.DESC, "configId")).iterator().next();
-        logger.info("min tweets: " + config.getMinTweets() + "and max tweets: " + config.getMaxTweets());
+        config = configRepository.findAll(new Sort(Sort.Direction.DESC, "configId")).iterator().next();
+        logger.info("min tweets: " + config.getMinTweets() + " and max tweets: " + config.getMaxTweets());
 
 
-        generateTweets(config);
+        generateTweets();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Tweet> readFile() {
-        List<Tweet> tweets = new ArrayList<>();
 
-        List<String> stringList = Util.readFile("tweets.txt");
-        Tweet t;
-        Integer line = 1;
-        for (String s : stringList) {
-            String[] split = s.split(",");
+    public void generateTweets() {
 
-            // trim leading and trailing spaces.
-            for (int i = 0; i < split.length; i++) {
-                split[i] = split[i].trim();
-            }
-
-            Long classification = Long.parseLong(split[1]);
-            if (classification > 3 || classification < 1) {
-                logger.error("The classification id needs to be between 1 and 3. See line " + line + " in the text" +
-                        " file.");
-            }
-
-            t = new Tweet(split[0], classification);
-
-            if (t.getText().length() > TWEET_LIMIT) {
-                logger.warn(t.getText() + " is over the Twitter character limit (140). See line " + line + " in" +
-                        "the text file.");
-            } else {
-                tweets.add(t);
-            }
-            line++;
-        }
-
-        return tweets;
-    }
-
-    public void generateTweets(Config c) {
-
-        List<User> users = userRepository.getByConfig(c);
+        List<User> users = userRepository.getByConfig(config);
 
         for(User u: users) {
 
-            int numTweets = ThreadLocalRandom.current().nextInt(c.getMinTweets(), c.getMaxTweets());
+            int numTweets = ThreadLocalRandom.current().nextInt(config.getMinTweets(), config.getMaxTweets());
             List<Tweet> tweets = new ArrayList<>();
             Long relevant = new Long(3);
 
