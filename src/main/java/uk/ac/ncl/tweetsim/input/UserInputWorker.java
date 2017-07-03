@@ -63,7 +63,6 @@ public class UserInputWorker extends AbstractWorker
         logger.info("Saved to database.");
     }
 
-
     public List<User> generateUsers(int num) {
 
         List<User> users = new ArrayList<>();

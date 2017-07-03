@@ -7,11 +7,14 @@ import br.les.opus.twitter.repositories.TweetClassificationRepository;
 import br.les.opus.twitter.repositories.TweetRepository;
 import br.les.opus.twitter.repositories.TwitterUserRepository;
 import org.joda.time.LocalDateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import uk.ac.ncl.botnetwork.domain.Config;
 import uk.ac.ncl.botnetwork.domain.User;
+import uk.ac.ncl.botnetwork.domain.GeneratedTweet;
 import uk.ac.ncl.botnetwork.repositories.BNTweetRepository;
 import uk.ac.ncl.botnetwork.repositories.ConfigRepository;
 import uk.ac.ncl.botnetwork.repositories.ConnectionRepository;
@@ -84,7 +87,7 @@ public class InjectionWorker extends AbstractWorker
         // fetch the information from the bot_network schema.
         logger.info(logMsg + "Collecting data from bot_network schema...");
         List<User> btStoredUsers = this.getUserList();
-        List<uk.ac.ncl.botnetwork.domain.Tweet> btStoredTweets = this.getTweetList();
+        List<GeneratedTweet> btStoredTweets = this.getTweetList();
         logger.info(logMsg + "Collected.");
 
         // create classification map.
@@ -126,24 +129,29 @@ public class InjectionWorker extends AbstractWorker
     }
 
     private List<Tweet> tweetConvertAndInject(
-            List<uk.ac.ncl.botnetwork.domain.Tweet> list,
+            List<GeneratedTweet> list,
             Map<Long, TweetClassification> classificationMap) {
         List<Tweet> result = new ArrayList<>();
 
+        DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyyMMddHHmmssSSS");
+        LocalDateTime ldt;
         Tweet tweet;
-        for (uk.ac.ncl.botnetwork.domain.Tweet t : list) {
+        Integer i = 1;
+        for (GeneratedTweet t : list) {
             tweet = new Tweet();
             tweet.setText(t.getText());
             tweet.setClassification(classificationMap.get(t.getClassificationId()));
 
             // set random ID
-            LocalDateTime ldt = new LocalDateTime();
-            Long id = Long.parseLong(ldt.toString());
+            ldt = new LocalDateTime();
+            Long id = Long.parseLong(ldt.toString(dtf)) + i;
             tweet.setId(id);
 
             tweet.setUser(this.singleUserConvert(t.getUser()));
 
             result.add(tweet);
+
+            i++;
         }
 
         this.tweetRepository.save(result);
@@ -175,8 +183,8 @@ public class InjectionWorker extends AbstractWorker
         return (List<User>) btUserRepo.findAll();
     }
 
-    private List<uk.ac.ncl.botnetwork.domain.Tweet> getTweetList() {
-        return (List<uk.ac.ncl.botnetwork.domain.Tweet>) btTweetRepo.findAll();
+    private List<GeneratedTweet> getTweetList() {
+        return (List<GeneratedTweet>) btTweetRepo.findAll();
     }
 
     private Map<Long, TweetClassification> createMap() {

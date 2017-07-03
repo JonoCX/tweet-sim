@@ -6,9 +6,11 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import twitter4j.*;
-import twitter4j.conf.ConfigurationBuilder;
-import uk.ac.ncl.botnetwork.domain.Tweet;
+import twitter4j.IDs;
+import twitter4j.Status;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import uk.ac.ncl.botnetwork.domain.GeneratedTweet;
 import uk.ac.ncl.botnetwork.domain.User;
 import uk.ac.ncl.botnetwork.repositories.BNTweetRepository;
 import uk.ac.ncl.botnetwork.repositories.ConnectionRepository;
@@ -177,7 +179,7 @@ public class UserWorker implements Runnable
             }
         }
         else { // post new tweet.
-            Tweet tweet = tweetRepository.getRandomTweet();
+            GeneratedTweet tweet = tweetRepository.getRandomTweet();
             logger.info(outStarter + "Tweet selected: " + tweet);
             twitter.updateStatus(tweet.getText());
         }

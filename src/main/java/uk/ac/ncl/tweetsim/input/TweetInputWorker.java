@@ -6,14 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import uk.ac.ncl.botnetwork.domain.Config;
-import uk.ac.ncl.botnetwork.domain.Tweet;
+import uk.ac.ncl.botnetwork.domain.GeneratedTweet;
 import uk.ac.ncl.botnetwork.domain.User;
-import uk.ac.ncl.botnetwork.repositories.ConfigRepository;
 import uk.ac.ncl.botnetwork.repositories.BNTweetRepository;
+import uk.ac.ncl.botnetwork.repositories.ConfigRepository;
 import uk.ac.ncl.botnetwork.repositories.UserRepository;
 import uk.ac.ncl.tweetsim.AbstractWorker;
 import uk.ac.ncl.tweetsim.WorkerException;
-import uk.ac.ncl.tweetsim.util.Util;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -61,7 +60,6 @@ public class TweetInputWorker extends AbstractWorker
         generateTweets();
     }
 
-
     public void generateTweets() {
 
         List<User> users = userRepository.getByConfig(config);
@@ -69,13 +67,13 @@ public class TweetInputWorker extends AbstractWorker
         for(User u: users) {
 
             int numTweets = ThreadLocalRandom.current().nextInt(config.getMinTweets(), config.getMaxTweets());
-            List<Tweet> tweets = new ArrayList<>();
+            List<GeneratedTweet> tweets = new ArrayList<>();
             Long relevant = new Long(3);
 
             for(int j = 0; j < numTweets; j++) {
-                Tweet t;
+                GeneratedTweet t;
 
-                t = new Tweet(
+                t = new GeneratedTweet(
                         "BOT TWEET",
                         relevant,
                         u

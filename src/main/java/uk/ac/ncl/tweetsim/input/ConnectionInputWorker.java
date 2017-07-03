@@ -1,28 +1,23 @@
 package uk.ac.ncl.tweetsim.input;
 
 import org.apache.log4j.Logger;
-import org.joda.time.LocalDateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import uk.ac.ncl.botnetwork.domain.Config;
 import uk.ac.ncl.botnetwork.domain.Connection;
-import uk.ac.ncl.botnetwork.domain.Tweet;
+import uk.ac.ncl.botnetwork.domain.GeneratedTweet;
 import uk.ac.ncl.botnetwork.domain.User;
 import uk.ac.ncl.botnetwork.repositories.ConfigRepository;
 import uk.ac.ncl.botnetwork.repositories.ConnectionRepository;
 import uk.ac.ncl.botnetwork.repositories.UserRepository;
 import uk.ac.ncl.tweetsim.AbstractWorker;
 import uk.ac.ncl.tweetsim.WorkerException;
-import uk.ac.ncl.tweetsim.util.Util;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 
 /**
  * A worker to input connections between users into
@@ -83,7 +78,7 @@ public class ConnectionInputWorker extends AbstractWorker
 
 
             for(int j = 0; j < numFollowers; j++) {
-                Tweet t;
+                GeneratedTweet t;
                 User user;
 
                 int random = ThreadLocalRandom.current().nextInt(0, configUsers.size());

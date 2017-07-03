@@ -6,7 +6,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
 import uk.ac.ncl.tweetsim.input.*;
+import uk.ac.ncl.tweetsim.network.InjectionWorker;
 import uk.ac.ncl.tweetsim.network.NetworkWorker;
+import uk.ac.ncl.tweetsim.network.TestInjectionWorker;
 
 import javax.transaction.Transactional;
 import java.util.HashMap;
@@ -32,6 +34,8 @@ public class Runner
     private static final String NETWORK = "network";
     private static final String CONFIG = "config";
     private static final String CONTROLLER = "controller";
+    private static final String INJECTION = "injection";
+    private static final String TEST_INJECTION = "test-injection";
 
     @Autowired
     private TweetInputWorker tweetInput;
@@ -48,7 +52,11 @@ public class Runner
     @Autowired
     private ConfigWorker config;
 
+    @Autowired
+    private InjectionWorker injection;
 
+    @Autowired
+    private TestInjectionWorker testInjection;
 
     public static void main(String[] args) {
         // todo change this to be more dynamic in options.
@@ -56,7 +64,7 @@ public class Runner
             ApplicationContext context = new ClassPathXmlApplicationContext("tweet-sim-app-config.xml");
             Runner runner = (Runner) context.getBean("runner");
 
-            String choice = CONTROLLER;
+            String choice = TEST_INJECTION;//INJECTION; // CONTROLLER;
 
             if(choice == CONTROLLER) {
                 runner.seq(CONFIG);
@@ -91,6 +99,8 @@ public class Runner
         workers.put(CONNECTION_INPUT, connectionInput);
         workers.put(NETWORK, network);
         workers.put(CONFIG, config);
+        workers.put(INJECTION, injection);
+        workers.put(TEST_INJECTION, testInjection);
         return workers;
     }
 }
