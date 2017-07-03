@@ -9,7 +9,7 @@ import uk.ac.ncl.botnetwork.domain.Config;
 import uk.ac.ncl.botnetwork.domain.Tweet;
 import uk.ac.ncl.botnetwork.domain.User;
 import uk.ac.ncl.botnetwork.repositories.ConfigRepository;
-import uk.ac.ncl.botnetwork.repositories.TweetRepository;
+import uk.ac.ncl.botnetwork.repositories.BNTweetRepository;
 import uk.ac.ncl.botnetwork.repositories.UserRepository;
 import uk.ac.ncl.tweetsim.AbstractWorker;
 import uk.ac.ncl.tweetsim.WorkerException;
@@ -37,7 +37,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class TweetInputWorker extends AbstractWorker
 {
     @Autowired
-    private TweetRepository tweetRepository;
+    private BNTweetRepository tweetRepository;
 
     @Autowired
     private UserRepository userRepository;

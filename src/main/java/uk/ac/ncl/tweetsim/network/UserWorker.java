@@ -10,8 +10,8 @@ import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
 import uk.ac.ncl.botnetwork.domain.Tweet;
 import uk.ac.ncl.botnetwork.domain.User;
+import uk.ac.ncl.botnetwork.repositories.BNTweetRepository;
 import uk.ac.ncl.botnetwork.repositories.ConnectionRepository;
-import uk.ac.ncl.botnetwork.repositories.TweetRepository;
 import uk.ac.ncl.botnetwork.repositories.UserRepository;
 
 import javax.transaction.Transactional;
@@ -40,7 +40,7 @@ public class UserWorker implements Runnable
     private ConnectionRepository connectionRepository;
 
     @Autowired
-    private TweetRepository tweetRepository;
+    private BNTweetRepository tweetRepository;
 
     private Twitter twitter;
     private User user;
