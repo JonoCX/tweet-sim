@@ -48,8 +48,6 @@ public class Runner
     @Autowired
     private ConfigWorker config;
 
-    @Autowired
-    private ControlWorker controller;
 
 
     public static void main(String[] args) {
@@ -58,8 +56,18 @@ public class Runner
             ApplicationContext context = new ClassPathXmlApplicationContext("tweet-sim-app-config.xml");
             Runner runner = (Runner) context.getBean("runner");
 
+            String choice = CONTROLLER;
 
-           runner.run(CONTROLLER);
+            if(choice == CONTROLLER) {
+                runner.seq(CONFIG);
+                runner.seq(USER_INPUT);
+                runner.seq(TWEET_INPUT);
+                runner.seq(CONNECTION_INPUT);
+            } else {
+                runner.run(choice);
+            }
+
+
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             e.printStackTrace();
@@ -68,7 +76,12 @@ public class Runner
 
     @Transactional
     public void run(String option) throws WorkerException {
-        getWorkers().get(option).start();
+            getWorkers().get(option).start();
+    }
+
+    @Transactional
+    public void seq(String option) throws WorkerException {
+        getWorkers().get(option).run();
     }
 
     private Map<String, AbstractWorker> getWorkers() {
@@ -78,7 +91,6 @@ public class Runner
         workers.put(CONNECTION_INPUT, connectionInput);
         workers.put(NETWORK, network);
         workers.put(CONFIG, config);
-        workers.put(CONTROLLER, controller);
         return workers;
     }
 }
