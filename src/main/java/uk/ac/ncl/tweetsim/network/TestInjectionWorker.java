@@ -46,8 +46,9 @@ public class TestInjectionWorker extends AbstractWorker {
                 logger.info("\t" + followUser);
             }
 
+            logger.info(logMsg + "Following: ");
             for (TwitterUser followingUser : following) {
-                logger.info("\t" + followingUser);
+                logger.info("\t" + followingUser.toString());
             }
 
         }

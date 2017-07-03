@@ -168,7 +168,10 @@ public class InjectionWorker extends AbstractWorker
             storedFollowers = btConnRepo.findAllFollowers(stored);
 
             for (User inner : storedFollowers) {
-                user.getFollowers().add(this.singleUserConvert(inner));
+                TwitterUser find = this.singleUserConvert(inner);
+                user.getFollowers().add(find);
+                find.getFollowing().add(user);
+                this.userRepository.save(find);
             }
 
             result.add(user);
