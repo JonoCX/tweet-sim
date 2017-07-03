@@ -64,6 +64,7 @@ public class Runner
             ApplicationContext context = new ClassPathXmlApplicationContext("tweet-sim-app-config.xml");
             Runner runner = (Runner) context.getBean("runner");
 
+            // selection
             String choice = INJECTION;//TEST_INJECTION;//INJECTION; // CONTROLLER;
 
             if(choice == CONTROLLER) {
