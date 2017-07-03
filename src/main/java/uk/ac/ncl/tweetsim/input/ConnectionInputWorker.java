@@ -42,7 +42,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 @Transactional
-public class ConnectionInputWorker extends AbstractWorker implements InputWorker
+public class ConnectionInputWorker extends AbstractWorker
 {
     protected Logger logger = Logger.getLogger(ConnectionInputWorker.class);
 
@@ -66,43 +66,6 @@ public class ConnectionInputWorker extends AbstractWorker implements InputWorker
         generateFollowers();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Connection> readFile() {
-        List<Connection> connections = new ArrayList<>();
-
-        List<String> stringList = Util.readFile("connections.txt");
-        Connection c;
-        Integer line = 1;
-
-        for (String s : stringList) {
-            String[] split = s.split(",");
-
-            for (int i = 0; i < split.length; i++) {
-                split[i] = split[i].trim();
-            }
-
-            User userOne = userRepository.findOne(Long.parseLong(split[0]));
-            User userTwo = userRepository.findOne(Long.parseLong(split[1]));
-
-            if (userOne == null || userTwo == null) {
-                logger.error("One of the two users provided do not exist within " +
-                        "the database. Please add the users first before creating" +
-                        " a connection. " +
-                        "Line " + line + ", Origin: " + userOne + ", Destination: " + userTwo);
-            } else {
-                c = new Connection(
-                        userOne,
-                        userTwo
-                );
-                connections.add(c);
-            }
-        }
-
-        return connections;
-    }
 
     public void generateFollowers() {
 
@@ -115,18 +78,16 @@ public class ConnectionInputWorker extends AbstractWorker implements InputWorker
 
             int numFollowers = ThreadLocalRandom.current().nextInt(config.getMinFollowers(), config.getMaxFollowers());
 
+            List<User> configUsers = userRepository.getByConfig(config);
+            configUsers.remove(u);
+
+
             for(int j = 0; j < numFollowers; j++) {
                 Tweet t;
                 User user;
 
-                LocalDateTime date = new LocalDateTime();
-                DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMddHHmmssSSS");
-                Long id = Long.parseLong(date.toString(formatter)) + j;
-
-                user = new User(
-                        id,
-                        "CONNECTION-"+id
-                );
+                int random = ThreadLocalRandom.current().nextInt(0, configUsers.size());
+                user = configUsers.get(random);
 
                 c = new Connection(
                         u,
@@ -134,6 +95,7 @@ public class ConnectionInputWorker extends AbstractWorker implements InputWorker
                 );
 
                 connections.add(c);
+                configUsers.remove(user);
             }
 
             logger.info("Saving to database... " + u.getScreenName());
