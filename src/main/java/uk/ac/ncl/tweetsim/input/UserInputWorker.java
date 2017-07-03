@@ -1,13 +1,19 @@
 package uk.ac.ncl.tweetsim.input;
 
 import org.apache.log4j.Logger;
+import org.joda.time.LocalDateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
+import uk.ac.ncl.botnetwork.domain.Config;
 import uk.ac.ncl.botnetwork.domain.User;
+import uk.ac.ncl.botnetwork.repositories.ConfigRepository;
 import uk.ac.ncl.botnetwork.repositories.UserRepository;
 import uk.ac.ncl.tweetsim.AbstractWorker;
 import uk.ac.ncl.tweetsim.WorkerException;
@@ -27,47 +33,52 @@ import java.util.List;
  * user objects (as strings).
  *
  * @author Jonathan Carlton
+ * @author Callum McClean
  */
 @Component
 @Transactional
-public class UserInputWorker extends AbstractWorker implements InputWorker
+public class UserInputWorker extends AbstractWorker
 {
     protected Logger logger = Logger.getLogger(UserInputWorker.class);
 
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private ConfigRepository configRepository;
+
+    private Config config;
+
     @Override
     protected void execute() throws WorkerException {
-        logger.info("Loading users...");
-        List<User> users = this.readFile();
-        logger.info(users.size() + " users loaded");
+        logger.info("Loading current configuration...");
+        config = configRepository.findAll(new Sort(Sort.Direction.DESC, "configId")).iterator().next();
+        logger.info(config.getNumUsers() + " Users to be created.");
+
+        logger.info("Generating users....");
+        List<User> users = generateUsers(config.getNumUsers());
 
         logger.info("Saving to database...");
         userRepository.save(users);
         logger.info("Saved to database.");
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<User> readFile() {
+
+    public List<User> generateUsers(int num) {
+
         List<User> users = new ArrayList<>();
-
-        List<String> stringList = Util.readFile("users.txt");
         User user;
-        for (String s : stringList) {
-            String[] split = s.split(",");
 
-            // trim leading and trailing spaces
-            for (int i = 0; i < split.length; i++) {
-                split[i] = split[i].trim();
-            }
+        for(int i = 0; i < num; i++) {
+            LocalDateTime date = new LocalDateTime();
+            DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMddHHmmssSSS");
+            Long id = Long.parseLong(date.toString(formatter)) +i;
 
             user = new User(
-                    Long.parseLong(split[0]),
-                    split[1]
+                    id,
+                    "BOT-"+id,
+                    config
+
             );
 
             users.add(user);

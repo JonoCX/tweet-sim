@@ -1,0 +1,2 @@
+users:10, minTweets:5, maxTweets:20, minFollowers:4, maxFollowers:10
+users:10, minTweets:5, maxTweets:20, minFollowers:4, maxFollowers:10
