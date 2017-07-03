@@ -131,27 +131,26 @@ public class InjectionWorker extends AbstractWorker
     private List<Tweet> tweetConvertAndInject(
             List<GeneratedTweet> list,
             Map<Long, TweetClassification> classificationMap) {
+
         List<Tweet> result = new ArrayList<>();
 
         DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyyMMddHHmmssSSS");
         LocalDateTime ldt;
         Tweet tweet;
-        Integer i = 1;
+
+        Integer i = 0;
         for (GeneratedTweet t : list) {
-            tweet = new Tweet();
-            tweet.setText(t.getText());
-            tweet.setClassification(classificationMap.get(t.getClassificationId()));
 
             // set random ID
             ldt = new LocalDateTime();
-            Long id = Long.parseLong(ldt.toString(dtf)) + i;
-            tweet.setId(id);
+            tweet = new Tweet();
+            tweet.setText(t.getText());
+            tweet.setClassification(classificationMap.get(t.getClassificationId()));
+            tweet.setId(Long.parseLong(ldt.toString(dtf)) + i++);
 
             tweet.setUser(this.singleUserConvert(t.getUser()));
 
             result.add(tweet);
-
-            i++;
         }
 
         this.tweetRepository.save(result);
@@ -187,7 +186,10 @@ public class InjectionWorker extends AbstractWorker
     }
 
     private List<GeneratedTweet> getTweetList() {
-        return (List<GeneratedTweet>) btTweetRepo.findAll();
+
+        List<GeneratedTweet> list =  (List<GeneratedTweet>) btTweetRepo.getAll();
+        logger.info("size of tweet list is: " + list.size());
+        return list;
     }
 
     private Map<Long, TweetClassification> createMap() {
@@ -200,6 +202,7 @@ public class InjectionWorker extends AbstractWorker
     }
 
     private TwitterUser singleUserConvert(User user) {
+
         return userRepository.findOne(user.getTwitterId());
     }
 
