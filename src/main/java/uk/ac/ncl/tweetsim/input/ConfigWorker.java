@@ -76,6 +76,20 @@ public class ConfigWorker extends AbstractWorker implements InputWorker
                 map.put(pair[0], pair[1]);
             }
 
+            for(Map.Entry<String, String> entry : map.entrySet()) {
+                try {
+                    Integer.parseInt(entry.getValue());
+                } catch( Exception e ) {
+                    logger.error("The value supplied for " + entry.getKey() + " must be an Integer");
+                    System.exit(0);
+                }
+            }
+
+            if(Integer.parseInt(map.get("maxFollowers")) > Integer.parseInt(map.get("users")) - 1) {
+                logger.error("Maximum number of followers can not exceed number of users - 1");
+                System.exit(0);
+            }
+
 
             int numUsers = Integer.parseInt(map.get("users"));
             int maxTweets = Integer.parseInt(map.get("maxTweets"));
