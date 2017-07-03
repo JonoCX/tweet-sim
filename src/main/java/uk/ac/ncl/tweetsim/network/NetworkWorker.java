@@ -22,6 +22,10 @@ public class NetworkWorker extends AbstractWorker
 {
     protected Logger logger = Logger.getLogger(NetworkWorker.class);
 
+    /**
+     * forcing the commit so you can see this.
+     * @throws WorkerException
+     */
     @Override
     protected void execute() throws WorkerException {
         String logMsg = "[" + this.getClass().getSimpleName() + "]";
