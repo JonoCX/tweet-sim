@@ -1,5 +1,6 @@
 package uk.ac.ncl.tweetsim.network;
 
+import br.les.opus.twitter.domain.Tweet;
 import br.les.opus.twitter.domain.TwitterUser;
 import br.les.opus.twitter.repositories.TweetRepository;
 import br.les.opus.twitter.repositories.TwitterUserRepository;
@@ -52,5 +53,13 @@ public class TestInjectionWorker extends AbstractWorker {
             }
 
         }
+
+//        logger.info("\n\n\n");
+//        logger.info(logMsg + "Loading tweets...");
+//        List<Tweet> tweetList = tweetRepository
+    }
+
+    private void cleanDatabase(List<TwitterUser> users) {
+        userRepository.delete(users);
     }
 }

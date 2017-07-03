@@ -88,25 +88,25 @@ public class InjectionWorker extends AbstractWorker
         logger.info(logMsg + "Collecting data from bot_network schema...");
         List<User> btStoredUsers = this.getUserList();
         List<GeneratedTweet> btStoredTweets = this.getTweetList();
-        logger.info(logMsg + "Collected.");
+        logger.info(logMsg + "Collected. # " + btStoredTweets.size());
 
         // create classification map.
         Map<Long, TweetClassification> classMap = this.createMap();
 
         // convert users.
-        logger.info(logMsg + "Converting and injecting users...");
-        List<TwitterUser> convertedUsers = this.userConvertAndInject(btStoredUsers);
-        logger.info(logMsg + "Converted and injected.");
+//        logger.info(logMsg + "Converting and injecting users...");
+//        List<TwitterUser> convertedUsers = this.userConvertAndInject(btStoredUsers);
+//        logger.info(logMsg + "Converted and injected " + convertedUsers.size() + " users.");
 
         // convert tweets.
         logger.info(logMsg + "Converting and injecting tweets...");
         List<Tweet> convertedTweets = this.tweetConvertAndInject(btStoredTweets, classMap);
-        logger.info(logMsg + "Converted and injected.");
+        logger.info(logMsg + "Converted and injected " + convertedTweets.size() + " tweets.");
 
-        // convert connections
-        logger.info(logMsg + "Creating connections between users...");
-        List<TwitterUser> connectedUsers = this.connectionConvertAndInject(convertedUsers);
-        logger.info(logMsg + "Created.");
+//        // convert connections
+//        logger.info(logMsg + "Creating connections between users...");
+//        List<TwitterUser> connectedUsers = this.connectionConvertAndInject(convertedUsers);
+//        logger.info(logMsg + "Created.");
     }
 
     private List<TwitterUser> userConvertAndInject(List<User> list) {
@@ -134,7 +134,6 @@ public class InjectionWorker extends AbstractWorker
         List<Tweet> result = new ArrayList<>();
 
         DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyyMMddHHmmssSSS");
-        LocalDateTime ldt;
         Tweet tweet;
         Integer i = 1;
         for (GeneratedTweet t : list) {
@@ -143,7 +142,7 @@ public class InjectionWorker extends AbstractWorker
             tweet.setClassification(classificationMap.get(t.getClassificationId()));
 
             // set random ID
-            ldt = new LocalDateTime();
+            LocalDateTime ldt = new LocalDateTime();
             Long id = Long.parseLong(ldt.toString(dtf)) + i;
             tweet.setId(id);
 
