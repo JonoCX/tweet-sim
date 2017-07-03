@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
+import uk.ac.ncl.tweetsim.input.ConfigWorker;
 import uk.ac.ncl.tweetsim.input.ConnectionInputWorker;
 import uk.ac.ncl.tweetsim.input.TweetInputWorker;
 import uk.ac.ncl.tweetsim.input.UserInputWorker;
@@ -31,6 +32,7 @@ public class Runner
     private static final String USER_INPUT = "user-input";
     private static final String CONNECTION_INPUT = "connection-input";
     private static final String NETWORK = "network";
+    private static final String CONFIG = "config";
 
     @Autowired
     private TweetInputWorker tweetInput;
@@ -44,6 +46,9 @@ public class Runner
     @Autowired
     private NetworkWorker network;
 
+    @Autowired
+    private ConfigWorker config;
+
     public static void main(String[] args) {
         // todo change this to be more dynamic in options.
         try {
@@ -51,7 +56,7 @@ public class Runner
             Runner runner = (Runner) context.getBean("runner");
 
 
-//            runner.run(NETWORK);
+           runner.run(CONNECTION_INPUT);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             e.printStackTrace();
@@ -69,6 +74,7 @@ public class Runner
         workers.put(USER_INPUT, userInput);
         workers.put(CONNECTION_INPUT, connectionInput);
         workers.put(NETWORK, network);
+        workers.put(CONFIG, config);
         return workers;
     }
 }
