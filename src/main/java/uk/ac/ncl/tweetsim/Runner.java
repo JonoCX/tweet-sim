@@ -21,6 +21,7 @@ import java.util.Map;
  * Various workers can be spawned from here.
  *
  * @author Jonathan Carlton
+ * @author Callum McClean
  */
 @Component
 @Transactional
