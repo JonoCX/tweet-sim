@@ -88,25 +88,25 @@ public class InjectionWorker extends AbstractWorker
         logger.info(logMsg + "Collecting data from bot_network schema...");
         List<User> btStoredUsers = this.getUserList();
         List<GeneratedTweet> btStoredTweets = this.getTweetList();
-        logger.info(logMsg + "Collected.");
+        logger.info(logMsg + "Collected. # " + btStoredTweets.size());
 
         // create classification map.
         Map<Long, TweetClassification> classMap = this.createMap();
 
         // convert users.
-        logger.info(logMsg + "Converting and injecting users...");
-        List<TwitterUser> convertedUsers = this.userConvertAndInject(btStoredUsers);
-        logger.info(logMsg + "Converted and injected.");
+//        logger.info(logMsg + "Converting and injecting users...");
+//        List<TwitterUser> convertedUsers = this.userConvertAndInject(btStoredUsers);
+//        logger.info(logMsg + "Converted and injected " + convertedUsers.size() + " users.");
 
         // convert tweets.
         logger.info(logMsg + "Converting and injecting tweets...");
         List<Tweet> convertedTweets = this.tweetConvertAndInject(btStoredTweets, classMap);
-        logger.info(logMsg + "Converted and injected.");
+        logger.info(logMsg + "Converted and injected " + convertedTweets.size() + " tweets.");
 
-        // convert connections
-        logger.info(logMsg + "Creating connections between users...");
-        List<TwitterUser> connectedUsers = this.connectionConvertAndInject(convertedUsers);
-        logger.info(logMsg + "Created.");
+//        // convert connections
+//        logger.info(logMsg + "Creating connections between users...");
+//        List<TwitterUser> connectedUsers = this.connectionConvertAndInject(convertedUsers);
+//        logger.info(logMsg + "Created.");
     }
 
     private List<TwitterUser> userConvertAndInject(List<User> list) {
@@ -131,26 +131,26 @@ public class InjectionWorker extends AbstractWorker
     private List<Tweet> tweetConvertAndInject(
             List<GeneratedTweet> list,
             Map<Long, TweetClassification> classificationMap) {
-
         List<Tweet> result = new ArrayList<>();
 
         DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyyMMddHHmmssSSS");
-        LocalDateTime ldt;
         Tweet tweet;
-
-        Integer i = 0;
+        Integer i = 1;
         for (GeneratedTweet t : list) {
-
-            // set random ID
-            ldt = new LocalDateTime();
             tweet = new Tweet();
             tweet.setText(t.getText());
             tweet.setClassification(classificationMap.get(t.getClassificationId()));
-            tweet.setId(Long.parseLong(ldt.toString(dtf)) + i++);
+
+            // set random ID
+            LocalDateTime ldt = new LocalDateTime();
+            Long id = Long.parseLong(ldt.toString(dtf)) + i;
+            tweet.setId(id);
 
             tweet.setUser(this.singleUserConvert(t.getUser()));
 
             result.add(tweet);
+
+            i++;
         }
 
         this.tweetRepository.save(result);
@@ -186,10 +186,7 @@ public class InjectionWorker extends AbstractWorker
     }
 
     private List<GeneratedTweet> getTweetList() {
-
-        List<GeneratedTweet> list =  (List<GeneratedTweet>) btTweetRepo.getAll();
-        logger.info("size of tweet list is: " + list.size());
-        return list;
+        return (List<GeneratedTweet>) btTweetRepo.findAll();
     }
 
     private Map<Long, TweetClassification> createMap() {
@@ -202,7 +199,6 @@ public class InjectionWorker extends AbstractWorker
     }
 
     private TwitterUser singleUserConvert(User user) {
-
         return userRepository.findOne(user.getTwitterId());
     }
 
