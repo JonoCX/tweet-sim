@@ -220,7 +220,13 @@ public class InjectionWorker extends AbstractWorker
     }
 
     private void updateMetaData(Tweet tweet) {
-        TweetsMetadata metadata = metaDao.findOne(tweet.getUser(), tweet.getClassification());
+        TweetsMetadata metadata;
+        try {
+            metadata = metaDao.findOne(tweet.getUser(), tweet.getClassification());
+        } catch(NullPointerException e) {
+            metadata = null;
+        }
+
         if (metadata != null) {
             metadata.incrementCount();
         } else {
