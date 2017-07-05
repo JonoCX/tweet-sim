@@ -20,8 +20,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * A worker to input tweets, stored in a text file,
- * into the underlying database.
+ * A worker to input tweets into the underlying database.
  *
  * @see uk.ac.ncl.tweetsim.util.Util for input file
  * configuration information - this will break if

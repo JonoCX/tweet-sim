@@ -2,9 +2,11 @@ package uk.ac.ncl.tweetsim.network;
 
 import br.les.opus.twitter.domain.Tweet;
 import br.les.opus.twitter.domain.TweetClassification;
+import br.les.opus.twitter.domain.TweetsMetadata;
 import br.les.opus.twitter.domain.TwitterUser;
 import br.les.opus.twitter.repositories.TweetClassificationRepository;
 import br.les.opus.twitter.repositories.TweetRepository;
+import br.les.opus.twitter.repositories.TweetsMetadataRepository;
 import br.les.opus.twitter.repositories.TwitterUserRepository;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -51,6 +53,9 @@ public class InjectionWorker extends AbstractWorker
 
     @Autowired
     private TweetClassificationRepository classRepository;
+
+    @Autowired
+    private TweetsMetadataRepository metaDao;
 
     @Autowired
     private UserRepository btUserRepo;
@@ -155,6 +160,11 @@ public class InjectionWorker extends AbstractWorker
 
         this.tweetRepository.save(result);
 
+        // create/update metadata ready for TR process.
+        for (Tweet t : result) {
+            this.updateMetaData(t);
+        }
+
         return result;
     }
 
@@ -207,5 +217,15 @@ public class InjectionWorker extends AbstractWorker
                 .findAll(new Sort(Sort.Direction.DESC, "configId"))
                 .iterator()
                 .next();
+    }
+
+    private void updateMetaData(Tweet tweet) {
+        TweetsMetadata metadata = metaDao.findOne(tweet.getUser(), tweet.getClassification());
+        if (metadata != null) {
+            metadata.incrementCount();
+        } else {
+            metadata = new TweetsMetadata(tweet);
+        }
+        metaDao.save(metadata);
     }
 }
