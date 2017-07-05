@@ -48,8 +48,6 @@ public class TweetInputWorker extends AbstractWorker
 
     protected Logger logger = Logger.getLogger(TweetInputWorker.class);
 
-    private static final Integer TWEET_LIMIT = 140;
-
     @Override
     protected void execute() throws WorkerException {
         logger.info("Loading current configuration...");
@@ -60,6 +58,15 @@ public class TweetInputWorker extends AbstractWorker
         generateTweets();
     }
 
+
+    /**
+     *
+     * Creates and stores some number of
+     * Tweet objects for each user in the
+     * current config. The number of tweets is
+     * chosen at random between the bounds supplied.
+     *
+     */
     public void generateTweets() {
 
         List<User> users = userRepository.getByConfig(config);

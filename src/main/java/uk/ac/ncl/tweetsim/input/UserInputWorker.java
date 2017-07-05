@@ -56,19 +56,26 @@ public class UserInputWorker extends AbstractWorker
         logger.info(config.getNumUsers() + " Users to be created.");
 
         logger.info("Generating users....");
-        List<User> users = generateUsers(config.getNumUsers());
+        List<User> users = generateUsers();
 
         logger.info("Saving to database...");
         userRepository.save(users);
         logger.info("Saved to database.");
     }
 
-    public List<User> generateUsers(int num) {
+    /**
+     * Generates the number of User objects
+     * required for this configuration. Each
+     * object is linked to the configuration object.
+     *
+     * @return List<User>
+     */
+    public List<User> generateUsers() {
 
         List<User> users = new ArrayList<>();
         User user;
 
-        for(int i = 0; i < num; i++) {
+        for(int i = 0; i < config.getNumUsers(); i++) {
             LocalDateTime date = new LocalDateTime();
             DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMddHHmmssSSS");
             Long id = Long.parseLong(date.toString(formatter)) +i;

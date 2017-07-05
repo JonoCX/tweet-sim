@@ -26,20 +26,23 @@ import java.util.Map;
 
 @Component
 @Transactional
-public class ConfigWorker extends AbstractWorker implements InputWorker
+public class ConfigWorker extends AbstractWorker
 {
     protected Logger logger = Logger.getLogger(ConfigWorker.class);
 
     @Autowired
     private ConfigRepository configRepository;
 
-    @Autowired
-    private ConnectionRepository connectionRepository;
-
+    /**
+     *  Method overrides AbstractWorker and runs when this worker is
+     *  called.
+     *
+     * @throws WorkerException
+     */
     @Override
     protected void execute() throws WorkerException {
         logger.info("Loading configs...");
-        List<Config> configs = this.readFile();
+        List<Config> configs = this.createConfig();
         logger.info(configs.size() + " configurations loaded.");
 
         logger.info("Saving to database...");
@@ -49,10 +52,15 @@ public class ConfigWorker extends AbstractWorker implements InputWorker
     }
 
     /**
-     * {@inheritDoc}
+     *
+     * Using the Util readFile method, config.txt is split
+     * in to key pairs and stored in a map. These values
+     * are used to create a Config object which is saved
+     * into the database for use by other classes.
+     *
+     * @return List<Config>
      */
-    @Override
-    public List<Config> readFile() {
+    public List<Config> createConfig() {
         List<Config> configs = new ArrayList<>();
 
         List<String> stringList = Util.readFile("config.txt");

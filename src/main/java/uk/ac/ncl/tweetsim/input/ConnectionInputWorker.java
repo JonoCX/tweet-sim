@@ -62,6 +62,14 @@ public class ConnectionInputWorker extends AbstractWorker
     }
 
 
+    /**
+     * Using the global Config object, this method
+     * connects the current user to a random number
+     * (withing the bounds supplied in the config file) of
+     * other users within that config. Stored in the
+     * connections table.
+     *
+     */
     public void generateFollowers() {
 
         List<User> users = userRepository.getByConfig(config);
