@@ -99,9 +99,9 @@ public class InjectionWorker extends AbstractWorker
         Map<Long, TweetClassification> classMap = this.createMap();
 
         // convert users.
-//        logger.info(logMsg + "Converting and injecting users...");
-//        List<TwitterUser> convertedUsers = this.userConvertAndInject(btStoredUsers);
-//        logger.info(logMsg + "Converted and injected " + convertedUsers.size() + " users.");
+        logger.info(logMsg + "Converting and injecting users...");
+        List<TwitterUser> convertedUsers = this.userConvertAndInject(btStoredUsers);
+        logger.info(logMsg + "Converted and injected " + convertedUsers.size() + " users.");
 
         // convert tweets.
         logger.info(logMsg + "Converting and injecting tweets...");
@@ -109,9 +109,9 @@ public class InjectionWorker extends AbstractWorker
         logger.info(logMsg + "Converted and injected " + convertedTweets.size() + " tweets.");
 
 //        // convert connections
-//        logger.info(logMsg + "Creating connections between users...");
-//        List<TwitterUser> connectedUsers = this.connectionConvertAndInject(convertedUsers);
-//        logger.info(logMsg + "Created.");
+        logger.info(logMsg + "Creating connections between users...");
+        List<TwitterUser> connectedUsers = this.connectionConvertAndInject(convertedUsers);
+        logger.info(logMsg + "Created.");
     }
 
     private List<TwitterUser> userConvertAndInject(List<User> list) {
@@ -221,11 +221,11 @@ public class InjectionWorker extends AbstractWorker
 
     private void updateMetaData(Tweet tweet) {
         TweetsMetadata metadata;
-        try {
+//        try {
             metadata = metaDao.findOne(tweet.getUser(), tweet.getClassification());
-        } catch(NullPointerException e) {
-            metadata = null;
-        }
+//        } catch(NullPointerException e) {
+//            metadata = null;
+//        }
 
         if (metadata != null) {
             metadata.incrementCount();
