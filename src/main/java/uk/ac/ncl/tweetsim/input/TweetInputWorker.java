@@ -88,7 +88,8 @@ public class TweetInputWorker extends AbstractWorker
                 t = new GeneratedTweet(
                         "BOT TWEET",
                         relevant,
-                        u
+                        u,
+                        config
                 );
 
                 tweets.add(t);

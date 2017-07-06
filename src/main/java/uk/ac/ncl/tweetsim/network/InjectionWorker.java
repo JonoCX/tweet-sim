@@ -201,11 +201,11 @@ public class InjectionWorker extends AbstractWorker
     }
 
     private List<User> getUserList() {
-        return (List<User>) btUserRepo.findAll();
+        return (List<User>) btUserRepo.getByConfig(config);
     }
 
     private List<GeneratedTweet> getTweetList() {
-        return (List<GeneratedTweet>) btTweetRepo.findAll();
+        return (List<GeneratedTweet>) btTweetRepo.getByConfig(config);
     }
 
     private Map<Long, TweetClassification> createMap() {
