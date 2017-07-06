@@ -49,12 +49,18 @@ public class TweetInputWorker extends AbstractWorker
 
     @Override
     protected void execute() throws WorkerException {
-        logger.info("Loading current configuration...");
-        config = configRepository.findAll(new Sort(Sort.Direction.DESC, "configId")).iterator().next();
-        logger.info("min tweets: " + config.getMinTweets() + " and max tweets: " + config.getMaxTweets());
+
+        List<Config> configs = configRepository.findNotComplete();
+
+        for(Config c : configs) {
+            logger.info("Loading current configuration...");
+            config = c;
+            logger.info("Config: " + config.getConfigId() + " min tweets: " + config.getMinTweets() + " and max tweets: " + config.getMaxTweets());
 
 
-        generateTweets();
+            generateTweets();
+        }
+
     }
 
 

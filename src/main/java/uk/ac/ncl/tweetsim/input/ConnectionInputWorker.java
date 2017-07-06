@@ -54,11 +54,19 @@ public class ConnectionInputWorker extends AbstractWorker
 
     @Override
     protected void execute() throws WorkerException {
-        logger.info("Loading current configuration...");
-        config = configRepository.findAll(new Sort(Sort.Direction.DESC, "configId")).iterator().next();
-        logger.info("min followers: " + config.getMinFollowers() + " and max followers: " + config.getMaxFollowers());
 
-        generateFollowers();
+        List<Config> configs = configRepository.findNotComplete();
+
+        for(Config c : configs) {
+
+            logger.info("Loading current configuration...");
+            config = c;
+            logger.info("min followers: " + config.getMinFollowers() + " and max followers: " + config.getMaxFollowers());
+
+            generateFollowers();
+
+        }
+
     }
 
 

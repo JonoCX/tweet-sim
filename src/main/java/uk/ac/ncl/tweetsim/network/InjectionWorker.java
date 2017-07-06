@@ -84,34 +84,43 @@ public class InjectionWorker extends AbstractWorker
 
         logger.info(logMsg + "starting up.");
 
-        // collect configuration information.
-        logger.info(logMsg + "Collecting configuration information...");
-        this.config = this.getNewestConfig();
-        logger.info(logMsg + "Collected.");
+        List<Config> configs = configRepository.findNotComplete();
 
-        // fetch the information from the bot_network schema.
-        logger.info(logMsg + "Collecting data from bot_network schema...");
-        List<User> btStoredUsers = this.getUserList();
-        List<GeneratedTweet> btStoredTweets = this.getTweetList();
-        logger.info(logMsg + "Collected. # " + btStoredTweets.size());
+        for(Config c : configs) {
 
-        // create classification map.
-        Map<Long, TweetClassification> classMap = this.createMap();
+            // collect configuration information.
+            logger.info(logMsg + "Collecting configuration information...");
+            this.config = c;
+            logger.info(logMsg + "Collected.");
 
-        // convert users.
-        logger.info(logMsg + "Converting and injecting users...");
-        List<TwitterUser> convertedUsers = this.userConvertAndInject(btStoredUsers);
-        logger.info(logMsg + "Converted and injected " + convertedUsers.size() + " users.");
+            // fetch the information from the bot_network schema.
+            logger.info(logMsg + "Collecting data from bot_network schema...");
+            List<User> btStoredUsers = this.getUserList();
+            List<GeneratedTweet> btStoredTweets = this.getTweetList();
+            logger.info(logMsg + "Collected. # " + btStoredTweets.size());
 
-        // convert tweets.
-        logger.info(logMsg + "Converting and injecting tweets...");
-        List<Tweet> convertedTweets = this.tweetConvertAndInject(btStoredTweets, classMap);
-        logger.info(logMsg + "Converted and injected " + convertedTweets.size() + " tweets.");
+            // create classification map.
+            Map<Long, TweetClassification> classMap = this.createMap();
+
+            // convert users.
+            logger.info(logMsg + "Converting and injecting users...");
+            List<TwitterUser> convertedUsers = this.userConvertAndInject(btStoredUsers);
+            logger.info(logMsg + "Converted and injected " + convertedUsers.size() + " users.");
+
+            // convert tweets.
+            logger.info(logMsg + "Converting and injecting tweets...");
+            List<Tweet> convertedTweets = this.tweetConvertAndInject(btStoredTweets, classMap);
+            logger.info(logMsg + "Converted and injected " + convertedTweets.size() + " tweets.");
 
 //        // convert connections
-        logger.info(logMsg + "Creating connections between users...");
-        List<TwitterUser> connectedUsers = this.connectionConvertAndInject(convertedUsers);
-        logger.info(logMsg + "Created.");
+            logger.info(logMsg + "Creating connections between users...");
+            List<TwitterUser> connectedUsers = this.connectionConvertAndInject(convertedUsers);
+            logger.info(logMsg + "Created.");
+
+
+            c.setComplete(true);
+        }
+
     }
 
     private List<TwitterUser> userConvertAndInject(List<User> list) {

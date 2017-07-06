@@ -51,16 +51,22 @@ public class UserInputWorker extends AbstractWorker
 
     @Override
     protected void execute() throws WorkerException {
-        logger.info("Loading current configuration...");
-        config = configRepository.findAll(new Sort(Sort.Direction.DESC, "configId")).iterator().next();
-        logger.info(config.getNumUsers() + " Users to be created.");
 
-        logger.info("Generating users....");
-        List<User> users = generateUsers();
+        List<Config> configs = configRepository.findNotComplete();
 
-        logger.info("Saving to database...");
-        userRepository.save(users);
-        logger.info("Saved to database.");
+        for(Config c : configs) {
+            logger.info("Loading current configuration...");
+            config = c;
+            logger.info(config.getNumUsers() + " Users to be created.");
+
+            logger.info("Generating users....");
+            List<User> users = generateUsers();
+
+            logger.info("Saving to database...");
+            userRepository.save(users);
+            logger.info("Saved to database.");
+        }
+
     }
 
     /**
@@ -82,7 +88,7 @@ public class UserInputWorker extends AbstractWorker
 
             user = new User(
                     id,
-                    "BOT-"+id,
+                    "BOT-"+config.getConfigId()+"-"+id,
                     config
 
             );

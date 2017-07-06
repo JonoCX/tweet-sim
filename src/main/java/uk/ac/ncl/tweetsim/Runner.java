@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
+import uk.ac.ncl.botnetwork.repositories.ConfigRepository;
 import uk.ac.ncl.tweetsim.input.*;
 import uk.ac.ncl.tweetsim.network.InjectionWorker;
 import uk.ac.ncl.tweetsim.network.NetworkWorker;
@@ -65,13 +66,14 @@ public class Runner
             Runner runner = (Runner) context.getBean("runner");
 
             // selection
-            String choice = TEST_INJECTION;//INJECTION; // CONTROLLER;
+            String choice = CONTROLLER;//INJECTION; // CONTROLLER;
 
             if(choice == CONTROLLER) {
                 runner.seq(CONFIG);
                 runner.seq(USER_INPUT);
                 runner.seq(TWEET_INPUT);
                 runner.seq(CONNECTION_INPUT);
+                runner.seq(INJECTION);
             } else {
                 runner.run(choice);
             }

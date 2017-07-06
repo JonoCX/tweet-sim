@@ -1,1 +1,2 @@
-users:100, minTweets:3, maxTweets:50, minFollowers:3, maxFollowers:20
+users:10, minTweets:3, maxTweets:50, minFollowers:3, maxFollowers:9
+users:35, minTweets:6, maxTweets:30, minFollowers:2, maxFollowers:7
