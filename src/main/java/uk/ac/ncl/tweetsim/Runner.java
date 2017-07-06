@@ -65,7 +65,7 @@ public class Runner
             Runner runner = (Runner) context.getBean("runner");
 
             // selection
-            String choice = INJECTION;//TEST_INJECTION;//INJECTION; // CONTROLLER;
+            String choice = TEST_INJECTION;//INJECTION; // CONTROLLER;
 
             if(choice == CONTROLLER) {
                 runner.seq(CONFIG);
