@@ -79,7 +79,6 @@ public class InjectionWorker extends AbstractWorker
      */
     @Override
     protected void execute() throws WorkerException {
-        // todo the order of execution needs to be considered.
         logMsg = "[" + this.getClass().getSimpleName() + "] ";
 
         logger.info(logMsg + "starting up.");
@@ -112,7 +111,7 @@ public class InjectionWorker extends AbstractWorker
             List<Tweet> convertedTweets = this.tweetConvertAndInject(btStoredTweets, classMap);
             logger.info(logMsg + "Converted and injected " + convertedTweets.size() + " tweets.");
 
-//        // convert connections
+            // convert connections
             logger.info(logMsg + "Creating connections between users...");
             List<TwitterUser> connectedUsers = this.connectionConvertAndInject(convertedUsers);
             logger.info(logMsg + "Created.");
