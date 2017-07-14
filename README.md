@@ -8,6 +8,7 @@ First and foremost, this requires that you have the bot network API installed lo
 The PUC-Rio Twitter API also needs to be installed in your local Maven directory. However, there are further dependencies required. From the OpusDengue bitbucket repo, clone the following: commons-geojson and commons-persistence. Install these by doing the following (within each of the clone directories):
 
 `$ mvn -f clean`
+
 `$ mvn install -DskipTests`
 
 Both Callum and I made changes to; [twitter-api](https://github.com/JonoCX/twitter-api), [tweet-classifier](https://github.com/JonoCX/tweets-classifier), and [data-crawler](https://github.com/JonoCX/tweet-sim-crawler). If these have not been moved to the OpusDengue bitbucket then you'll need to clone them from my ([JonoCX](https://github.com/JonoCX/)) github account. Once cloned, follow the same install steps as above.
